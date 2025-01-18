@@ -1,4 +1,4 @@
-package org.jhon.app.todolistapp.persistence.ntity;
+package org.jhon.app.todolistapp.persistence.entity;
 
 import jakarta.persistence.*;
 

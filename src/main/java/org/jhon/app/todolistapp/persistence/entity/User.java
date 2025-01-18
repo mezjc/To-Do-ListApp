@@ -1,4 +1,4 @@
-package org.jhon.app.todolistapp.persistence.ntity;
+package org.jhon.app.todolistapp.persistence.entity;
 
 import jakarta.persistence.*;
 
@@ -17,7 +17,7 @@ public class User {
     @Column(name = "apellidos", nullable = false)
     private String lastname;
 
-    @Column(name = "usuario", nullable = false)
+    @Column(name = "usuario", nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
