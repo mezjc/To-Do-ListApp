@@ -6,15 +6,16 @@ import org.jhon.app.todolistapp.util.State;
 import java.time.LocalDateTime;
 
 @Entity(name = "tareas")
+//@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id"}))
 public class Task {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "user_id", nullable = false)
-    private Long UserId;
+    private Long userId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
@@ -75,11 +76,11 @@ public class Task {
     }
 
     public Long getUserId() {
-        return UserId;
+        return userId;
     }
 
     public void setUserId(Long userId) {
-        UserId = userId;
+        this.userId = userId;
     }
 
     public User getUser() {

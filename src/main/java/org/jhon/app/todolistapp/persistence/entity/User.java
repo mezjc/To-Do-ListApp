@@ -23,7 +23,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany( mappedBy = "user")
     private List<Task> tasks;
 
     private LocalDateTime createdAt;

@@ -19,7 +19,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> findAll() {
-        return List.of();
+        return taskCrudRepository.findAll();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> findByCategoryAndTile(String category, String title) {
-        return taskCrudRepository.findByCategoryAndTitleContaining(category, title);
+        return taskCrudRepository.findByCategoryGenreAndTitleContaining(category, title);
     }
 
     @Override

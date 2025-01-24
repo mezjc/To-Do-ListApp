@@ -12,9 +12,9 @@ public interface TaskCrudRepository extends JpaRepository<Task,Long> {
 
     List<Task> findByCategoryGenreContaining(String category);
 
-    List<Task> findByCategoryAndTitleContaining (String category, String title);
+    List<Task> findByCategoryGenreAndTitleContaining (String category, String title);
 
-    List<Task> findByUserId(Long userId);
+    List<Task> findByUserId(Long usersId);
 
     List<Task> findByUserUsername (String username);
 
