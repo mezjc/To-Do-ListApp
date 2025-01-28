@@ -7,6 +7,7 @@ import org.jhon.app.todolistapp.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,8 +25,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAllByName(String name) {
-        return userCrudRepository.findByFirstnameContaining(name);
+    public List<User> findAllByFirstname(String firstname) {
+        return userCrudRepository.findByFirstnameContaining(firstname);
+    }
+
+    @Override
+    public User findOneByFirstname(String name) {
+        return userCrudRepository.findByFirstname(name)
+                .orElseThrow(() -> new ObjectNotFoundException("[user:"+name+"]"));
     }
 
     @Override
@@ -40,8 +47,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User UpdateOneByUsername(String username, User user) {
-        User oldUser = this.findOneByUsername(username);
+    public User UpdateOneByUsername(String firstname, User user) {
+        User oldUser = this.findOneByUsername(firstname);
         oldUser.setFirstname(user.getFirstname());
         oldUser.setLastname(user.getLastname());
         oldUser.setPassword(user.getPassword());
