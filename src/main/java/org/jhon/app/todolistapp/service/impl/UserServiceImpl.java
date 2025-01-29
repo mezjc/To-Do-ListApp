@@ -5,11 +5,13 @@ import org.jhon.app.todolistapp.persistence.entity.User;
 import org.jhon.app.todolistapp.persistence.repository.UserCrudRepository;
 import org.jhon.app.todolistapp.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserCrudRepository userCrudRepository;
@@ -19,22 +21,26 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> findAll() {
         return userCrudRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> findAllByFirstname(String firstname) {
         return userCrudRepository.findByFirstnameContaining(firstname);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User findOneByFirstname(String name) {
         return userCrudRepository.findByFirstname(name)
                 .orElseThrow(() -> new ObjectNotFoundException("[user:"+name+"]"));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User findOneByUsername(String username) {
         return userCrudRepository.findByUsername(username)
@@ -62,5 +68,11 @@ public class UserServiceImpl implements UserService {
         if (deletedRecords != 1){
             throw new ObjectNotFoundException("[user:"+username+"]");
         }
+    }
+
+    @Override
+    public void deleteAll() {
+        userCrudRepository.deleteAll();
+        throw  new RuntimeException();
     }
 }

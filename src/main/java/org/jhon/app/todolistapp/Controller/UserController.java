@@ -1,6 +1,7 @@
 package org.jhon.app.todolistapp.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.hibernate.sql.Delete;
 import org.jhon.app.todolistapp.exception.ObjectNotFoundException;
 import org.jhon.app.todolistapp.persistence.entity.User;
 import org.jhon.app.todolistapp.service.UserService;
@@ -77,5 +78,11 @@ public class UserController {
         }catch (ObjectNotFoundException exception){
             return ResponseEntity.noContent().build();
         }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAll(){
+        userService.deleteAll();
+        return ResponseEntity.noContent().build();
     }
 }

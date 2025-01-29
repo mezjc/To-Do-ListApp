@@ -20,4 +20,6 @@ public interface UserService {
     User UpdateOneByUsername(String firstname, User user);
 
     void deleteOneByUsername(String username);
+
+    void deleteAll();
 }
