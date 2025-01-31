@@ -1,6 +1,11 @@
 package org.jhon.app.todolistapp.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.jhon.app.todolistapp.util.State;
 
 import java.time.LocalDateTime;
@@ -17,6 +22,7 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JsonBackReference
     private User user;
 
     @Column(nullable = false)
@@ -29,10 +35,14 @@ public class Task {
     @Column(nullable = false)
     private State state;
 
+    @JsonFormat(pattern = "yyyy/MM/dd - HH:mm:ss")
+    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @OneToOne( cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_categoria", unique = true)
+    @JsonManagedReference
     private Category category;
 
     public Long getId() {

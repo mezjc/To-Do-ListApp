@@ -1,6 +1,9 @@
 package org.jhon.app.todolistapp.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,8 +27,11 @@ public class User {
     private String password;
 
     @OneToMany( mappedBy = "user")
+    @JsonManagedReference
     private List<Task> tasks;
 
+    @JsonFormat(pattern = "yyyy/MM/dd - HH:mm:ss")
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
