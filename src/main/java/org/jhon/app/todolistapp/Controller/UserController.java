@@ -2,6 +2,8 @@ package org.jhon.app.todolistapp.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.hibernate.sql.Delete;
+import org.jhon.app.todolistapp.dto.request.SaveUser;
+import org.jhon.app.todolistapp.dto.response.GetUser;
 import org.jhon.app.todolistapp.exception.ObjectNotFoundException;
 import org.jhon.app.todolistapp.persistence.entity.User;
 import org.jhon.app.todolistapp.service.UserService;
@@ -24,8 +26,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll(@RequestParam(required = false) String username){
-        List<User>  users = null;
+    public ResponseEntity<List<GetUser>> findAll(@RequestParam(required = false) String username){
+        List<GetUser>  users = null;
 
         if (StringUtils.hasText(username)){
             users =  userService.findAllByFirstname(username);
@@ -37,7 +39,7 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<User> findByUsername(@PathVariable String username){
+    public ResponseEntity<GetUser> findByUsername(@PathVariable String username){
 
         try {
 
@@ -49,20 +51,20 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createOne(@RequestBody User user,
+    public ResponseEntity<GetUser> createOne(@RequestBody SaveUser saveDto,
                                           HttpServletRequest request){
-        User createdUser = userService.createOne(user);
+        GetUser createdUser = userService.createOne(saveDto);
         String baseUrl = request.getRequestURL().toString();
-        URI newLocation = URI.create(baseUrl + "/" + user.getUsername());
+        URI newLocation = URI.create(baseUrl + "/" + saveDto.username());
 
         return ResponseEntity.created(newLocation).body(createdUser);
     }
 
     @PutMapping("/{username}")
-    public  ResponseEntity<User> updateOneById(@PathVariable String username,
-                                               @RequestBody User user){
+    public  ResponseEntity<GetUser> updateOneById(@PathVariable String username,
+                                               @RequestBody SaveUser saveDto){
         try {
-            User updateUser = userService.UpdateOneByUsername(username, user);
+            GetUser updateUser = userService.UpdateOneByUsername(username, saveDto);
             return ResponseEntity.ok(updateUser);
         }catch (ObjectNotFoundException exception){
             return ResponseEntity.notFound().build();

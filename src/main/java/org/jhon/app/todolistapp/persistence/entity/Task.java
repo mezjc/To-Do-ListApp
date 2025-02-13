@@ -22,7 +22,7 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    @JsonBackReference
+    //@JsonBackReference
     private User user;
 
     @Column(nullable = false)
@@ -42,7 +42,7 @@ public class Task {
 
     @OneToOne( cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_categoria", unique = true)
-    @JsonManagedReference
+    //@JsonManagedReference
     private Category category;
 
     public Long getId() {

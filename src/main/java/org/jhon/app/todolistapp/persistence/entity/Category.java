@@ -16,7 +16,7 @@ public class Category {
 
     @OneToOne( mappedBy = "category",cascade = CascadeType.PERSIST)
 //    @JsonIgnore
-    @JsonBackReference
+   // @JsonBackReference
     private Task task;
 
 

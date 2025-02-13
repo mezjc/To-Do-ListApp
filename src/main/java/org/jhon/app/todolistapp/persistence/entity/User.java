@@ -27,10 +27,10 @@ public class User {
     private String password;
 
     @OneToMany( mappedBy = "user")
-    @JsonManagedReference
+    //@JsonManagedReference
     private List<Task> tasks;
 
-    @JsonFormat(pattern = "yyyy/MM/dd - HH:mm:ss")
+    //@JsonFormat(pattern = "yyyy/MM/dd - HH:mm:ss")
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
