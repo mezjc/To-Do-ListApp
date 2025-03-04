@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity(name = "categorias")
 public class Category {
 
@@ -14,10 +16,10 @@ public class Category {
     @Column(nullable = false)
     private String genre;
 
-    @OneToOne( mappedBy = "category",cascade = CascadeType.PERSIST)
-//    @JsonIgnore
-    @JsonBackReference
-    private Task task;
+    @OneToMany( mappedBy = "category",cascade = CascadeType.PERSIST)
+    @JsonIgnore
+    //@JsonBackReference
+    private List<Task> task;
 
 
     public Long getId() {
@@ -36,11 +38,11 @@ public class Category {
         this.genre = genre;
     }
 
-    public Task getTask() {
+    public List<Task> getTask() {
         return task;
     }
 
-    public void setTask(Task task) {
+    public void setTask(List<Task> task) {
         this.task = task;
     }
 }

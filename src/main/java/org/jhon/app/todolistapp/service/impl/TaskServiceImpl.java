@@ -1,13 +1,16 @@
 package org.jhon.app.todolistapp.service.impl;
 
 import org.jhon.app.todolistapp.exception.ObjectNotFoundException;
+import org.jhon.app.todolistapp.persistence.entity.Category;
 import org.jhon.app.todolistapp.persistence.entity.Task;
+import org.jhon.app.todolistapp.persistence.repository.CategoryCrudRepository;
 import org.jhon.app.todolistapp.persistence.repository.TaskCrudRepository;
 import org.jhon.app.todolistapp.service.TaskService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -15,8 +18,11 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskCrudRepository taskCrudRepository;
 
-    public TaskServiceImpl(TaskCrudRepository taskCrudRepository) {
+    private final CategoryCrudRepository categoryCrudRepository;
+
+    public TaskServiceImpl(TaskCrudRepository taskCrudRepository, CategoryCrudRepository categoryCrudRepository) {
         this.taskCrudRepository = taskCrudRepository;
+        this.categoryCrudRepository = categoryCrudRepository;
     }
 
     @Transactional(readOnly = true)
@@ -64,8 +70,19 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
+    private Category findOneByGenre(Category category){
+        Optional<Category> newCategory = categoryCrudRepository.findByGenre(category.getGenre());
+//        if (newCategory.isPresent()){
+//            return newCategory.get();
+//        }
+//        return categoryCrudRepository.save(category);
+        return newCategory.orElseGet(() -> categoryCrudRepository.save(category));
+    }
+
     @Override
     public Task createOne(Task task) {
+        Category newCategory = this.findOneByGenre(task.getCategory());
+        task.setCategory(newCategory);
         return taskCrudRepository.save(task);
     }
 

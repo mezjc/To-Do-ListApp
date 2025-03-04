@@ -40,9 +40,9 @@ public class Task {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToOne( cascade = CascadeType.PERSIST)
+    @ManyToOne( cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_categoria", unique = true)
-    @JsonManagedReference
+    //@JsonBackReference
     private Category category;
 
     public Long getId() {
