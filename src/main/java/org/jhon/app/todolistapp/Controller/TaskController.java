@@ -1,6 +1,8 @@
 package org.jhon.app.todolistapp.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.jhon.app.todolistapp.dto.request.SaveTask;
+import org.jhon.app.todolistapp.dto.response.GetTask;
 import org.jhon.app.todolistapp.exception.ObjectNotFoundException;
 import org.jhon.app.todolistapp.persistence.entity.Task;
 import org.jhon.app.todolistapp.service.TaskService;
@@ -23,26 +25,27 @@ public class TaskController {
     }
 
     @RequestMapping
-    public ResponseEntity<List<Task>> findAll(@RequestParam(required = false) String category,
-                                              @RequestParam(required = false) String title){
+    public ResponseEntity<List<GetTask>> findAll(@RequestParam(required = false) String category,
+                                                 @RequestParam(required = false) String title){
 
-        List<Task> tareas = null;
+        List<GetTask> tasks = null;
         if (StringUtils.hasText(category) && StringUtils.hasText(title)){
-            tareas = taskService.findByCategoryAndTile(category, title);
+            tasks = taskService.findByCategoryAndTile(category, title);
         } else if (StringUtils.hasText(category)) {
-            tareas = taskService.findByCategory(category);
+            tasks = taskService.findByCategory(category);
         } else if (StringUtils.hasText(title)) {
-            tareas = taskService.findByTitle(title);
+            tasks = taskService.findByTitle(title);
         }else {
-            tareas = taskService.findAll();
+            tasks = taskService.findAll();
         }
 
-        return ResponseEntity.ok(tareas);
+        return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> findByOne(@PathVariable Long id){
+    public ResponseEntity<GetTask> findByOne(@PathVariable Long id){
         try {
+            System.out.println("entra al carch" + id);
             return ResponseEntity.ok(taskService.findOneById(id)) ;
         }catch (ObjectNotFoundException exception){
             return ResponseEntity.notFound().build();
@@ -50,23 +53,33 @@ public class TaskController {
 
     }
 
+    @GetMapping("/user/{username}")
+    public ResponseEntity<List<GetTask>> findOneByName(@PathVariable String username){
+        try {
+            return ResponseEntity.ok(taskService.findByUsername(username)) ;
+        }catch (ObjectNotFoundException exception){
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
     @PostMapping
-    public ResponseEntity<Task> createOne(@RequestBody Task task, HttpServletRequest request){
-        Task taskCreated = taskService.createOne(task);
+    public ResponseEntity<GetTask> createOne(@RequestBody SaveTask saveDto, HttpServletRequest request){
+        GetTask taskCreated = taskService.createOne(saveDto);
 
         String baseUrl = request.getRequestURL().toString();
-        URI newLocation = URI.create(baseUrl + "/" + taskCreated.getId());
+        URI newLocation = URI.create(baseUrl + "/" + taskCreated.id());
 
         return ResponseEntity.created(newLocation).body(taskCreated);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateOneById(@PathVariable Long id, @RequestBody Task task){
+    public ResponseEntity<GetTask> updateOneById(@PathVariable Long id, @RequestBody SaveTask saveDto){
 
 
         try {
 
-        Task updateTask = taskService.updateOneById(id, task);
+            GetTask updateTask = taskService.updateOneById(id, saveDto);
             return ResponseEntity.ok(updateTask);
         }catch (ObjectNotFoundException exception){
             return  ResponseEntity.notFound().build();

@@ -1,5 +1,7 @@
 package org.jhon.app.todolistapp.service;
 
+import org.jhon.app.todolistapp.dto.request.SaveUser;
+import org.jhon.app.todolistapp.dto.response.GetUser;
 import org.jhon.app.todolistapp.persistence.entity.User;
 
 import java.util.List;
@@ -7,17 +9,17 @@ import java.util.Optional;
 
 public interface UserService {
 
-    List<User> findAll();
+    List<GetUser> findAll();
 
-    List<User> findAllByFirstname(String firstname);
+    List<GetUser> findAllByFirstname(String firstname);
 
-    User findOneByFirstname(String findOneByFirstname);
+    GetUser findOneByFirstname(String findOneByFirstname);
 
-    User findOneByUsername(String username);
+    GetUser findOneByUsername(String username);
 
-    User createOne(User user);
+    GetUser createOne(SaveUser saveUser);
 
-    User UpdateOneByUsername(String firstname, User user);
+    GetUser UpdateOneByUsername(String firstname, SaveUser saveUser);
 
     void deleteOneByUsername(String username);
 

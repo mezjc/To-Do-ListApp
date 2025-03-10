@@ -22,7 +22,7 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    @JsonBackReference
+    //@JsonBackReference
     private User user;
 
     @Column(nullable = false)
@@ -41,7 +41,7 @@ public class Task {
     private LocalDateTime createdAt;
 
     @ManyToOne( cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "id_categoria", unique = true)
+    @JoinColumn(name = "id_categoria")
     //@JsonBackReference
     private Category category;
 

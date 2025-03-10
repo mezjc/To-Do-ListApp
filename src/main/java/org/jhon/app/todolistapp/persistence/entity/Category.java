@@ -17,7 +17,7 @@ public class Category {
     private String genre;
 
     @OneToMany( mappedBy = "category",cascade = CascadeType.PERSIST)
-    @JsonIgnore
+    //@JsonIgnore
     //@JsonBackReference
     private List<Task> task;
 
@@ -44,5 +44,14 @@ public class Category {
 
     public void setTask(List<Task> task) {
         this.task = task;
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "Id=" + Id +
+                ", genre='" + genre + '\'' +
+                ", task=" + task +
+                '}';
     }
 }

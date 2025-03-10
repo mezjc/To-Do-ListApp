@@ -1,6 +1,10 @@
 package org.jhon.app.todolistapp.service.impl;
 
+import org.jhon.app.todolistapp.dto.request.SaveTask;
+import org.jhon.app.todolistapp.dto.response.GetTask;
 import org.jhon.app.todolistapp.exception.ObjectNotFoundException;
+import org.jhon.app.todolistapp.mapper.CategoryMapper;
+import org.jhon.app.todolistapp.mapper.TaskMapper;
 import org.jhon.app.todolistapp.persistence.entity.Category;
 import org.jhon.app.todolistapp.persistence.entity.Task;
 import org.jhon.app.todolistapp.persistence.repository.CategoryCrudRepository;
@@ -27,78 +31,107 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Task> findAll() {
-        return taskCrudRepository.findAll();
+    public List<GetTask> findAll() {
+        List<Task>entities = taskCrudRepository.findAll();
+
+        return TaskMapper.toGetDtoList(entities);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Task> findByTitle(String title) {
-        return taskCrudRepository.findByTitleContaining(title);
+    public List<GetTask> findByTitle(String title) {
+        List<Task> entities = taskCrudRepository.findByTitleContaining(title);
+
+        return TaskMapper.toGetDtoList(entities);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Task> findByCategory(String category) {
-        return taskCrudRepository.findByCategoryGenreContaining(category);
+    public List<GetTask> findByCategory(String category) {
+        List<Task> entities = taskCrudRepository.findByCategoryGenreContaining(category);
+        return TaskMapper.toGetDtoList(entities);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Task> findByCategoryAndTile(String category, String title) {
-        return taskCrudRepository.findByCategoryGenreAndTitleContaining(category, title);
+    public List<GetTask> findByCategoryAndTile(String category, String title) {
+        List<Task> entities = taskCrudRepository.findByCategoryGenreAndTitleContaining(category, title);
+        return TaskMapper.toGetDtoList(entities);
+
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Task> findByUserId(Long userId) {
-        return taskCrudRepository.findByUserId(userId);
+    public List<GetTask> findByUserId(Long userId) {
+        List<Task> entities = taskCrudRepository.findByUserId(userId);
+        return TaskMapper.toGetDtoList(entities);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Task> findByUsername(String username) {
-        return taskCrudRepository.findByUserUsername(username);
+    public List<GetTask> findByUsername(String username) {
+        List<Task> entities = taskCrudRepository.findByUserUsername(username);
+        return TaskMapper.toGetDtoList(entities);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Task findOneById(Long id) {
-        return taskCrudRepository
-                .findById(id)
+    public GetTask findOneById(Long id) {
+        return TaskMapper.toGetDto(this.findOneEntityById(id));
+
+    }
+
+
+    @Transactional(readOnly = true)
+    public Task findOneEntityById(Long id) {
+        System.out.println(taskCrudRepository.findById(id));
+
+        return taskCrudRepository.findById(id)
                 .orElseThrow(()-> new ObjectNotFoundException("[task:"+ Long.toString(id) +"]"));
 
+
     }
 
-    private Category findOneByGenre(Category category){
-        Optional<Category> newCategory = categoryCrudRepository.findByGenre(category.getGenre());
-//        if (newCategory.isPresent()){
-//            return newCategory.get();
-//        }
-//        return categoryCrudRepository.save(category);
-        return newCategory.orElseGet(() -> categoryCrudRepository.save(category));
+
+    public Category findOneByGenre(String category){
+
+        Optional<Category> newCategory = categoryCrudRepository.findByGenre(category);
+        if (newCategory.isPresent()){
+            return newCategory.get();
+        }
+        Category newCategory2  = new Category();
+        newCategory2.setGenre(category);
+        return categoryCrudRepository.save(newCategory2);
+
+//        return categoryCrudRepository.findByGenre(category)
+//                .orElseGet(() -> categoryCrudRepository.save(new Category(category)));
     }
 
     @Override
-    public Task createOne(Task task) {
-        Category newCategory = this.findOneByGenre(task.getCategory());
-        task.setCategory(newCategory);
-        return taskCrudRepository.save(task);
+    public GetTask createOne(SaveTask saveDto) {
+
+        Category newCategory = this.findOneByGenre(saveDto.category());
+
+        Task newTask = TaskMapper.toEntity(saveDto);
+
+        newTask.setCategory(newCategory);
+
+        newTask =  taskCrudRepository.save(newTask);
+
+        return TaskMapper.toGetDto(newTask);
     }
 
     @Override
-    public Task updateOneById(Long id, Task newTask) {
-        Task oldTask = this.findOneById(id);
-        oldTask.setDescription(newTask.getDescription());
-        oldTask.setState(newTask.getState());
-        oldTask.setTitle(newTask.getTitle());
-        oldTask.setCategory(newTask.getCategory());
-        return taskCrudRepository.save(oldTask);
+    public GetTask updateOneById(Long id, SaveTask saveDto) {
+        Task oldTask = this.findOneEntityById(id);
+        TaskMapper.updateEntity(oldTask, saveDto);
+
+        return TaskMapper.toGetDto(taskCrudRepository.save(oldTask));
     }
 
     @Override
     public void deleteOneById(Long id) {
-        Task task = this.findOneById(id);
+        Task task = this.findOneEntityById(id);
         taskCrudRepository.delete(task);
     }
 }

@@ -1,6 +1,9 @@
 package org.jhon.app.todolistapp.service.impl;
 
+import org.jhon.app.todolistapp.dto.request.SaveUser;
+import org.jhon.app.todolistapp.dto.response.GetUser;
 import org.jhon.app.todolistapp.exception.ObjectNotFoundException;
+import org.jhon.app.todolistapp.mapper.UserMapper;
 import org.jhon.app.todolistapp.persistence.entity.User;
 import org.jhon.app.todolistapp.persistence.repository.UserCrudRepository;
 import org.jhon.app.todolistapp.service.UserService;
@@ -23,42 +26,50 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<User> findAll() {
-        return userCrudRepository.findAll();
+    public List<GetUser> findAll() {
+        List<User>entities =  userCrudRepository.findAll();
+        return UserMapper.toGetDtoList(entities);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<User> findAllByFirstname(String firstname) {
-        return userCrudRepository.findByFirstnameContaining(firstname);
+    public List<GetUser> findAllByFirstname(String firstname) {
+        List<User>entities = userCrudRepository.findByFirstnameContaining(firstname);
+        return UserMapper.toGetDtoList(entities);
+
     }
 
     @Transactional(readOnly = true)
     @Override
-    public User findOneByFirstname(String name) {
+    public GetUser findOneByFirstname(String name) {
         return userCrudRepository.findByFirstname(name)
+                .map(each ->UserMapper.toGetDto(each))
                 .orElseThrow(() -> new ObjectNotFoundException("[user:"+name+"]"));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public User findOneByUsername(String username) {
+    public GetUser findOneByUsername(String username) {
+        return UserMapper.toGetDto(this.findOneEntityByUsername(username));
+    }
+
+    @Transactional(readOnly = true)
+    public User findOneEntityByUsername(String username) {
         return userCrudRepository.findByUsername(username)
                 .orElseThrow(() -> new ObjectNotFoundException("[user:"+username+"]"));
     }
 
     @Override
-    public User createOne(User user) {
-        return userCrudRepository.save(user);
+    public GetUser createOne(SaveUser saveUser) {
+        User newUser = userCrudRepository.save(UserMapper.toEntity(saveUser));
+        return UserMapper.toGetDto(newUser);
     }
 
     @Override
-    public User UpdateOneByUsername(String firstname, User user) {
-        User oldUser = this.findOneByUsername(firstname);
-        oldUser.setFirstname(user.getFirstname());
-        oldUser.setLastname(user.getLastname());
-        oldUser.setPassword(user.getPassword());
-        return userCrudRepository.save(oldUser);
+    public GetUser UpdateOneByUsername(String firstname, SaveUser saveUser) {
+        User oldUser = this.findOneEntityByUsername(firstname);
+        UserMapper.updateEntity(oldUser, saveUser);
+        return UserMapper.toGetDto(userCrudRepository.save(oldUser));
     }
 
     @Override
