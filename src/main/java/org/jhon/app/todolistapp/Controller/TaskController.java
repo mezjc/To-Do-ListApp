@@ -1,6 +1,7 @@
 package org.jhon.app.todolistapp.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.jhon.app.todolistapp.dto.request.SaveTask;
 import org.jhon.app.todolistapp.dto.response.GetTask;
 import org.jhon.app.todolistapp.exception.ObjectNotFoundException;
@@ -64,7 +65,8 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<GetTask> createOne(@RequestBody SaveTask saveDto, HttpServletRequest request){
+    public ResponseEntity<GetTask> createOne(@Valid @RequestBody SaveTask saveDto,
+                                             HttpServletRequest request){
         GetTask taskCreated = taskService.createOne(saveDto);
 
         String baseUrl = request.getRequestURL().toString();
@@ -74,7 +76,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GetTask> updateOneById(@PathVariable Long id, @RequestBody SaveTask saveDto){
+    public ResponseEntity<GetTask> updateOneById(@PathVariable Long id,@Valid @RequestBody SaveTask saveDto){
 
 
         try {

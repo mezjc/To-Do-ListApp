@@ -1,6 +1,7 @@
 package org.jhon.app.todolistapp.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.hibernate.sql.Delete;
 import org.jhon.app.todolistapp.dto.request.SaveUser;
 import org.jhon.app.todolistapp.dto.response.GetUser;
@@ -51,7 +52,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<GetUser> createOne(@RequestBody SaveUser saveDto,
+    public ResponseEntity<GetUser> createOne(@Valid @RequestBody SaveUser saveDto,
                                           HttpServletRequest request){
         GetUser createdUser = userService.createOne(saveDto);
         String baseUrl = request.getRequestURL().toString();
@@ -62,7 +63,7 @@ public class UserController {
 
     @PutMapping("/{username}")
     public  ResponseEntity<GetUser> updateOneById(@PathVariable String username,
-                                               @RequestBody SaveUser saveDto){
+                                               @Valid @RequestBody SaveUser saveDto){
         try {
             GetUser updateUser = userService.UpdateOneByUsername(username, saveDto);
             return ResponseEntity.ok(updateUser);

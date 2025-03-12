@@ -7,6 +7,7 @@ import org.jhon.app.todolistapp.mapper.UserMapper;
 import org.jhon.app.todolistapp.persistence.entity.User;
 import org.jhon.app.todolistapp.persistence.repository.UserCrudRepository;
 import org.jhon.app.todolistapp.service.UserService;
+import org.jhon.app.todolistapp.service.validator.PasswordValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,12 +62,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUser createOne(SaveUser saveUser) {
+        System.out.println(" estos son los password" + saveUser.password() +" ----- " + saveUser.passwordRepeated());
+        PasswordValidator.validatePassword(saveUser.password(), saveUser.passwordRepeated());
+
         User newUser = userCrudRepository.save(UserMapper.toEntity(saveUser));
         return UserMapper.toGetDto(newUser);
     }
 
     @Override
     public GetUser UpdateOneByUsername(String firstname, SaveUser saveUser) {
+        PasswordValidator.validatePassword(saveUser.password(), saveUser.passwordRepeated());
+
+
         User oldUser = this.findOneEntityByUsername(firstname);
         UserMapper.updateEntity(oldUser, saveUser);
         return UserMapper.toGetDto(userCrudRepository.save(oldUser));

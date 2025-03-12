@@ -1,5 +1,6 @@
 package org.jhon.app.todolistapp.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jhon.app.todolistapp.util.State;
 
@@ -19,7 +20,9 @@ public record GetUser(
             String title,
             String description,
             State state,
-            @JsonProperty(value = "releaseYear") LocalDateTime createdAt,
+            @JsonProperty(value = "releaseYear")
+            @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+            LocalDateTime createdAt,
             String category
     ) implements Serializable{
     }
