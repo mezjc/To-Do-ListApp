@@ -10,8 +10,11 @@ import org.jhon.app.todolistapp.persistence.entity.Task;
 import org.jhon.app.todolistapp.persistence.repository.CategoryCrudRepository;
 import org.jhon.app.todolistapp.persistence.repository.TaskCrudRepository;
 import org.jhon.app.todolistapp.service.TaskService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -71,6 +74,9 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<GetTask> findByUsername(String username) {
         List<Task> entities = taskCrudRepository.findByUserUsername(username);
+        if (entities.isEmpty()){
+            throw new ObjectNotFoundException("[task:"+ username +"]");
+        }
         return TaskMapper.toGetDtoList(entities);
     }
 
@@ -84,9 +90,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional(readOnly = true)
     public Task findOneEntityById(Long id) {
-        System.out.println(taskCrudRepository.findById(id));
 
         return taskCrudRepository.findById(id)
+                //.orElseThrow(()-> new ResponseStatusException(HttpStatusCode.valueOf(404), "User not found "+ id));
                 .orElseThrow(()-> new ObjectNotFoundException("[task:"+ Long.toString(id) +"]"));
 
 

@@ -1,18 +1,28 @@
 package org.jhon.app.todolistapp.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.jhon.app.todolistapp.dto.request.SaveTask;
+import org.jhon.app.todolistapp.dto.response.ApiError;
 import org.jhon.app.todolistapp.dto.response.GetTask;
+import org.jhon.app.todolistapp.exception.InvalidPasswordException;
 import org.jhon.app.todolistapp.exception.ObjectNotFoundException;
 import org.jhon.app.todolistapp.persistence.entity.Task;
 import org.jhon.app.todolistapp.service.TaskService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @RestController
@@ -45,22 +55,14 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public ResponseEntity<GetTask> findByOne(@PathVariable Long id){
-        try {
-            System.out.println("entra al carch" + id);
-            return ResponseEntity.ok(taskService.findOneById(id)) ;
-        }catch (ObjectNotFoundException exception){
-            return ResponseEntity.notFound().build();
-        }
+
+            return ResponseEntity.ok(taskService.findOneById(id));
 
     }
 
     @GetMapping("/user/{username}")
     public ResponseEntity<List<GetTask>> findOneByName(@PathVariable String username){
-        try {
             return ResponseEntity.ok(taskService.findByUsername(username)) ;
-        }catch (ObjectNotFoundException exception){
-            return ResponseEntity.notFound().build();
-        }
 
     }
 
@@ -79,25 +81,20 @@ public class TaskController {
     public ResponseEntity<GetTask> updateOneById(@PathVariable Long id,@Valid @RequestBody SaveTask saveDto){
 
 
-        try {
 
             GetTask updateTask = taskService.updateOneById(id, saveDto);
             return ResponseEntity.ok(updateTask);
-        }catch (ObjectNotFoundException exception){
-            return  ResponseEntity.notFound().build();
-        }
+
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOneById(@PathVariable Long id){
-        try {
+
 
             taskService.deleteOneById(id);
             return ResponseEntity.noContent().build();
-        }catch (ObjectNotFoundException exception){
-            return ResponseEntity.notFound().build();
-        }
+
     }
-    
+
 
 }
