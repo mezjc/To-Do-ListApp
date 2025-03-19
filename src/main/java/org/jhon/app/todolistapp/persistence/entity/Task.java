@@ -36,7 +36,7 @@ public class Task {
     private State state;
 
     @JsonFormat(pattern = "yyyy/MM/dd - HH:mm:ss")
-    @CreationTimestamp
+    //@CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
 

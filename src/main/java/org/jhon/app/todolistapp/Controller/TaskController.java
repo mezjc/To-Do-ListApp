@@ -1,28 +1,17 @@
 package org.jhon.app.todolistapp.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.jhon.app.todolistapp.dto.request.SaveTask;
-import org.jhon.app.todolistapp.dto.response.ApiError;
+import org.jhon.app.todolistapp.dto.request.TaskSearchCriteria;
 import org.jhon.app.todolistapp.dto.response.GetTask;
-import org.jhon.app.todolistapp.exception.InvalidPasswordException;
-import org.jhon.app.todolistapp.exception.ObjectNotFoundException;
-import org.jhon.app.todolistapp.persistence.entity.Task;
 import org.jhon.app.todolistapp.service.TaskService;
-import org.springframework.http.HttpStatus;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -37,18 +26,12 @@ public class TaskController {
 
     @RequestMapping
     public ResponseEntity<List<GetTask>> findAll(@RequestParam(required = false) String category,
-                                                 @RequestParam(required = false) String title){
+                                                 @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate releaseYear,
+                                                 @RequestParam(required = false)  String state,
+                                                 @RequestParam(required = false)  String title){
 
-        List<GetTask> tasks = null;
-        if (StringUtils.hasText(category) && StringUtils.hasText(title)){
-            tasks = taskService.findByCategoryAndTile(category, title);
-        } else if (StringUtils.hasText(category)) {
-            tasks = taskService.findByCategory(category);
-        } else if (StringUtils.hasText(title)) {
-            tasks = taskService.findByTitle(title);
-        }else {
-            tasks = taskService.findAll();
-        }
+        TaskSearchCriteria searchCriteria = new TaskSearchCriteria(category,releaseYear,state, title);
+        List<GetTask> tasks = taskService.findAll(searchCriteria);
 
         return ResponseEntity.ok(tasks);
     }

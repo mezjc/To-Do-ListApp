@@ -1,6 +1,7 @@
 package org.jhon.app.todolistapp.service.impl;
 
 import org.jhon.app.todolistapp.dto.request.SaveTask;
+import org.jhon.app.todolistapp.dto.request.TaskSearchCriteria;
 import org.jhon.app.todolistapp.dto.response.GetTask;
 import org.jhon.app.todolistapp.exception.ObjectNotFoundException;
 import org.jhon.app.todolistapp.mapper.CategoryMapper;
@@ -9,13 +10,16 @@ import org.jhon.app.todolistapp.persistence.entity.Category;
 import org.jhon.app.todolistapp.persistence.entity.Task;
 import org.jhon.app.todolistapp.persistence.repository.CategoryCrudRepository;
 import org.jhon.app.todolistapp.persistence.repository.TaskCrudRepository;
+import org.jhon.app.todolistapp.persistence.specification.FindAllTaskSpecification;
 import org.jhon.app.todolistapp.service.TaskService;
+import org.jhon.app.todolistapp.util.State;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,41 +38,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<GetTask> findAll() {
-        List<Task>entities = taskCrudRepository.findAll();
+    public List<GetTask> findAll(TaskSearchCriteria searchCriteria) {
+        FindAllTaskSpecification taskSpecification = new FindAllTaskSpecification(searchCriteria);
+        List<Task>entities = taskCrudRepository.findAll(taskSpecification);
 
         return TaskMapper.toGetDtoList(entities);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<GetTask> findByTitle(String title) {
-        List<Task> entities = taskCrudRepository.findByTitleContaining(title);
-
-        return TaskMapper.toGetDtoList(entities);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<GetTask> findByCategory(String category) {
-        List<Task> entities = taskCrudRepository.findByCategoryGenreContaining(category);
-        return TaskMapper.toGetDtoList(entities);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<GetTask> findByCategoryAndTile(String category, String title) {
-        List<Task> entities = taskCrudRepository.findByCategoryGenreAndTitleContaining(category, title);
-        return TaskMapper.toGetDtoList(entities);
-
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<GetTask> findByUserId(Long userId) {
-        List<Task> entities = taskCrudRepository.findByUserId(userId);
-        return TaskMapper.toGetDtoList(entities);
-    }
 
     @Transactional(readOnly = true)
     @Override
