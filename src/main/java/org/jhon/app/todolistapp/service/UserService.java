@@ -3,13 +3,15 @@ package org.jhon.app.todolistapp.service;
 import org.jhon.app.todolistapp.dto.request.SaveUser;
 import org.jhon.app.todolistapp.dto.response.GetUser;
 import org.jhon.app.todolistapp.persistence.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
 
-    List<GetUser> findAll();
+    Page<GetUser> findAll(Pageable pageable);
 
     List<GetUser> findAllByFirstname(String firstname);
 

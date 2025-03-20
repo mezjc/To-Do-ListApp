@@ -8,6 +8,8 @@ import org.jhon.app.todolistapp.persistence.entity.User;
 import org.jhon.app.todolistapp.persistence.repository.UserCrudRepository;
 import org.jhon.app.todolistapp.service.UserService;
 import org.jhon.app.todolistapp.service.validator.PasswordValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +29,9 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<GetUser> findAll() {
-        List<User>entities =  userCrudRepository.findAll();
-        return UserMapper.toGetDtoList(entities);
+    public Page<GetUser> findAll(Pageable pageable) {
+        Page<User>entities =  userCrudRepository.findAll(pageable);
+        return entities.map(entity -> UserMapper.toGetDto(entity));
     }
 
     @Transactional(readOnly = true)

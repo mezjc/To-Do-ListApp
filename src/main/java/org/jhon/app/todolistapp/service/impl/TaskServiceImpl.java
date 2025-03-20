@@ -4,7 +4,6 @@ import org.jhon.app.todolistapp.dto.request.SaveTask;
 import org.jhon.app.todolistapp.dto.request.TaskSearchCriteria;
 import org.jhon.app.todolistapp.dto.response.GetTask;
 import org.jhon.app.todolistapp.exception.ObjectNotFoundException;
-import org.jhon.app.todolistapp.mapper.CategoryMapper;
 import org.jhon.app.todolistapp.mapper.TaskMapper;
 import org.jhon.app.todolistapp.persistence.entity.Category;
 import org.jhon.app.todolistapp.persistence.entity.Task;
@@ -12,12 +11,10 @@ import org.jhon.app.todolistapp.persistence.repository.CategoryCrudRepository;
 import org.jhon.app.todolistapp.persistence.repository.TaskCrudRepository;
 import org.jhon.app.todolistapp.persistence.specification.FindAllTaskSpecification;
 import org.jhon.app.todolistapp.service.TaskService;
-import org.jhon.app.todolistapp.util.State;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,11 +35,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<GetTask> findAll(TaskSearchCriteria searchCriteria) {
+    public Page<GetTask> findAll(TaskSearchCriteria searchCriteria, Pageable pageable) {
         FindAllTaskSpecification taskSpecification = new FindAllTaskSpecification(searchCriteria);
-        List<Task>entities = taskCrudRepository.findAll(taskSpecification);
+        Page<Task>entities = taskCrudRepository.findAll(taskSpecification, pageable);
 
-        return TaskMapper.toGetDtoList(entities);
+        return entities.map(entity -> TaskMapper.toGetDto(entity));
     }
 
 

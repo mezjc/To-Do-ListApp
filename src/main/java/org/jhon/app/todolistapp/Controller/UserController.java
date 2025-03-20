@@ -8,6 +8,8 @@ import org.jhon.app.todolistapp.dto.response.GetUser;
 import org.jhon.app.todolistapp.exception.ObjectNotFoundException;
 import org.jhon.app.todolistapp.persistence.entity.User;
 import org.jhon.app.todolistapp.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -27,14 +29,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetUser>> findAll(@RequestParam(required = false) String username){
-        List<GetUser>  users = null;
+    public ResponseEntity<Page<GetUser>> findAll(@RequestParam(required = false) String username,
+                                                 Pageable pageable){
 
-        if (StringUtils.hasText(username)){
-            users =  userService.findAllByFirstname(username);
-        }else {
-            users = userService.findAll();
-        }
+        Page<GetUser> users = userService.findAll(pageable);
+
 
         return ResponseEntity.ok(users);
     }
