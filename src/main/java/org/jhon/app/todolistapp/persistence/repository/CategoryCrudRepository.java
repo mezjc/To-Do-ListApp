@@ -9,7 +9,5 @@ import java.util.Optional;
 public interface CategoryCrudRepository extends JpaRepository<Category, Long> {
 
 
-    List<Category> findByTaskUserUsername(String username);
-
     Optional<Category> findByGenre(String genre);
 }

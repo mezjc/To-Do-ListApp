@@ -45,12 +45,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<GetTask> findByUsername(String username) {
-        List<Task> entities = taskCrudRepository.findByUserUsername(username);
-        if (entities.isEmpty()){
-            throw new ObjectNotFoundException("[task:"+ username +"]");
-        }
-        return TaskMapper.toGetDtoList(entities);
+    public Page<GetTask> findByUsername(String username,Pageable pageable) {
+        Page<Task> entities = taskCrudRepository.findByUserUsername(username,pageable);
+
+        return entities.map(each -> TaskMapper.toGetDto(each));
     }
 
     @Transactional(readOnly = true)
