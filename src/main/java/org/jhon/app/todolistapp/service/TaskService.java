@@ -13,7 +13,7 @@ public interface TaskService {
     Page<GetTask> findAll(TaskSearchCriteria searchCriteria, Pageable pageable);
 
 
-    List<GetTask> findByUsername(String username);
+    Page<GetTask> findByUsername(String username, Pageable pageable);
 
 
     GetTask findOneById(Long id);

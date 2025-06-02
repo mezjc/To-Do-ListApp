@@ -50,8 +50,8 @@ public class TaskController {
     }
 
     @GetMapping("/user/{username}")
-    public ResponseEntity<List<GetTask>> findOneByName(@PathVariable String username){
-            return ResponseEntity.ok(taskService.findByUsername(username)) ;
+    public ResponseEntity<Page<GetTask>> findOneByName(@PathVariable String username,Pageable pageable){
+            return ResponseEntity.ok(taskService.findByUsername(username, pageable)) ;
 
     }
 
